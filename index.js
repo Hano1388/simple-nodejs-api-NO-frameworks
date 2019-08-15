@@ -38,3 +38,20 @@ const mainServer = function(req, res) {
 httpServer.listen(3000, function() {
   console.log('Server listening on port 3000');
 });
+
+// set handlers
+const handlers = {};
+
+// define hello route
+handlers.hello = function(data, callback) {
+  callback(200, { "payload": data, "message": "Successfuly fetched hello world" });
+}
+// define notFound route
+handlers.notFound = function(data, callback) {
+  callback(404, { "message": "Not Found!" });
+}
+
+// define router
+const router = {
+  'hello' : handlers.hello
+};
