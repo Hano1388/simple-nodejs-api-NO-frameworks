@@ -23,15 +23,25 @@ const mainServer = function(req, res) {
   });
 
   req.on('end', function() {
+
+    const handlerPath = router.hasOwnProperty(trimmedPath) ? router[trimmedPath] : handlers.notFound;
+
+    const data = {
+      headers,
+      method,
+      payload: JSON.parse(buffer)
+    }
     buffer = decoder.end();
 
-    const payload = JSON.stringify(buffer);
-    res.setHeader('Content-Type', 'application/json');
-    res.end(payload);
-    console.info('requested path: ', trimmedPath);
-    console.info('method: ', method);
-    console.info('objectStringQuery: ', objectStringQuery);
-    console.info('payload: ', payload);
+    handlerPath(data, function(statusCode, payload) {
+      console.log('payload: ', payload);
+      payload = typeof payload === 'object' ? payload : {};
+      const payloadString = JSON.stringify(payload);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.writeHead(statusCode);
+      res.end(payloadString);
+    });
   });
 };
 
@@ -44,7 +54,7 @@ const handlers = {};
 
 // define hello route
 handlers.hello = function(data, callback) {
-  callback(200, { "payload": data, "message": "Successfuly fetched hello world" });
+  callback(200, { data, "message": "Successfuly fetched hello world" });
 }
 // define notFound route
 handlers.notFound = function(data, callback) {
