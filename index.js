@@ -3,6 +3,7 @@ const https = require('https');
 const url = require('url');
 const fs = require('fs');
 const StringDecoder = require('string_decoder').StringDecoder;
+const config = require('./config');
 
 // Create httpServer
 const httpServer = http.createServer(function(req, res) {
@@ -10,8 +11,8 @@ const httpServer = http.createServer(function(req, res) {
 });
 
 // Start httpServer
-httpServer.listen(3000, function() {
-  console.log('HTTP Server listening on port 3000');
+httpServer.listen(config.httpPort, function() {
+  console.log(`HTTP Server listening on port ${config.httpPort} in ${config.stage} mode`);
 });
 
 // httpsServerOptions
@@ -26,8 +27,8 @@ const httpsServer = https.createServer(httpsServerOptions, function(res, res) {
 });
 
 // Start httpsServer
-httpsServer.listen(3001, function() {
-  console.log('HTTPS Server listening on port 3001');
+httpsServer.listen(config.httpsPort, function() {
+  console.log(`HTTPS Server listening on port ${config.httpsPort} in ${config.stage} mode`);
 });
 
 const mainServer = function(req, res) {
