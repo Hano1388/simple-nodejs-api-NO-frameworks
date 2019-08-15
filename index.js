@@ -4,8 +4,30 @@ const url = require('url');
 const fs = require('fs');
 const StringDecoder = require('string_decoder').StringDecoder;
 
+// Create httpServer
 const httpServer = http.createServer(function(req, res) {
   mainServer(req, res);
+});
+
+// Start httpServer
+httpServer.listen(3000, function() {
+  console.log('HTTP Server listening on port 3000');
+});
+
+// httpsServerOptions
+const httpsServerOptions = {
+  key: fs.readFileSync('./https/key.pem'),
+  certificate: fs.readFileSync('./https/certificate.pem')
+};
+
+// Create httpsServer
+const httpsServer = https.createServer(httpsServerOptions, function(res, res) {
+  mainServer(req, res);
+});
+
+// Start httpsServer
+httpsServer.listen(3001, function() {
+  console.log('HTTPS Server listening on port 3001');
 });
 
 const mainServer = function(req, res) {
@@ -44,10 +66,6 @@ const mainServer = function(req, res) {
     });
   });
 };
-
-httpServer.listen(3000, function() {
-  console.log('Server listening on port 3000');
-});
 
 // set handlers
 const handlers = {};
